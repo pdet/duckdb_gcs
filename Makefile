@@ -32,22 +32,22 @@ ifeq ($(GEN),ninja)
 endif
 
 #### Configuration for this extension
-EXTENSION_NAME=QUACK
+EXTENSION_NAME=GCS
 EXTENSION_FLAGS=\
--DDUCKDB_EXTENSION_NAMES="quack" \
+-DDUCKDB_EXTENSION_NAMES="gcs" \
 -DDUCKDB_EXTENSION_${EXTENSION_NAME}_PATH="$(PROJ_DIR)" \
 -DDUCKDB_EXTENSION_${EXTENSION_NAME}_LOAD_TESTS=1 \
 -DDUCKDB_EXTENSION_${EXTENSION_NAME}_INCLUDE_PATH="$(PROJ_DIR)src/include" \
 -DDUCKDB_EXTENSION_${EXTENSION_NAME}_TEST_PATH="$(PROJ_DIR)test/sql"
 
 #### Add more of the DuckDB in-tree extensions here that you need (also feel free to remove them when not needed)
-EXTRA_EXTENSIONS_FLAG=-DBUILD_EXTENSIONS="tpch;visualizer"
+EXTRA_EXTENSIONS_FLAG=-DBUILD_EXTENSIONS="tpch;httpfs"
 
 BUILD_FLAGS=-DEXTENSION_STATIC_BUILD=1 $(EXTENSION_FLAGS) ${EXTRA_EXTENSIONS_FLAG} $(OSX_BUILD_FLAG) $(TOOLCHAIN_FLAGS)
 CLIENT_FLAGS:=
 
 #### Main build
-# For regular CLI build, we link the quack extension directly into the DuckDB executable
+# For regular CLI build, we link the gcs extension directly into the DuckDB executable
 CLIENT_FLAGS=-DDUCKDB_EXTENSION_${EXTENSION_NAME}_SHOULD_LINK=1
 
 debug:
@@ -79,20 +79,6 @@ test_release: release
 	./build/release/$(TEST_PATH) "$(PROJ_DIR)test/*"
 test_debug: debug
 	./build/debug/$(TEST_PATH) "$(PROJ_DIR)test/*"
-
-#### Client tests
-DEBUG_EXT_PATH='$(PROJ_DIR)build/debug/extension/quack/quack.duckdb_extension'
-RELEASE_EXT_PATH='$(PROJ_DIR)build/release/extension/quack/quack.duckdb_extension'
-test_js: test_debug_js
-test_debug_js: debug_js
-	cd duckdb/tools/nodejs && ${EXTENSION_NAME}_EXTENSION_BINARY_PATH=$(DEBUG_EXT_PATH) npm run test-path -- "../../../test/nodejs/**/*.js"
-test_release_js: release_js
-	cd duckdb/tools/nodejs && ${EXTENSION_NAME}_EXTENSION_BINARY_PATH=$(RELEASE_EXT_PATH) npm run test-path -- "../../../test/nodejs/**/*.js"
-test_python: test_debug_python
-test_debug_python: debug_python
-	cd test/python && ${EXTENSION_NAME}_EXTENSION_BINARY_PATH=$(DEBUG_EXT_PATH) python3 -m pytest
-test_release_python: release_python
-	cd test/python && ${EXTENSION_NAME}_EXTENSION_BINARY_PATH=$(RELEASE_EXT_PATH) python3 -m pytest
 
 #### Misc
 format:
