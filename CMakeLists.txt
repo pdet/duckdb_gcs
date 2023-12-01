@@ -15,7 +15,7 @@ set(LOADABLE_EXTENSION_NAME ${TARGET_NAME}_loadable_extension)
 project(${TARGET_NAME})
 include_directories(src/include)
 
-set(EXTENSION_SOURCES src/gcs_extension.cpp)
+set(EXTENSION_SOURCES src/gcs_extension.cpp src/gcs_file_system.cpp src/gcs_file_handle.cpp)
 
 build_static_extension(${TARGET_NAME} ${EXTENSION_SOURCES})
 build_loadable_extension(${TARGET_NAME} " " ${EXTENSION_SOURCES})

@@ -1,0 +1,12 @@
+# name: test/sql/gcs.test
+# description: test gcs extension
+# group: [gcs]
+
+
+# Require statement will ensure this test is run with this extension loaded
+require gcs
+
+# Confirm the extension works
+query II
+FROM 'gs://pdet-csv/easy.csv';
+----
